@@ -20,6 +20,7 @@ let downWeight = document.querySelector('#calories-minimal')
 const resultCalories = document.querySelector('.counter__result')
 let stateGender = male.value
 let stateActive = { tipe: minimalActive.value, coefficient: 1.2 };
+let stateResult = false
 
 
 
@@ -85,15 +86,31 @@ function checkedGender(e) {
 }
 
 function formReset() {
+    if (resultCalories.classList.contains('counter__result--hidden')) {
+        age.value = '';
+    height.value = '';
+    weight.value = '';
+    minimalActive.checked = true;
+    male.checked = true;
+    buttonSubmit.disabled = true
+    buttonReset.disabled = true
+    }
+    if (stateResult === false) {
     age.value = '';
     height.value = '';
     weight.value = '';
     minimalActive.checked = true;
     male.checked = true;
+    buttonSubmit.disabled = true
+    }
+    if (stateResult === true) {
+        resultCalories.classList.add('counter__result--hidden')
+        stateResult = false
+        buttonReset.disabled = true
+    }
 }
 
-function disabledButton() {
-    buttonReset.disabled = true;
+function disabledButtonReset() {
     formReset();
 }
 
@@ -108,26 +125,26 @@ function formSubmit(e) {
         upWeight.textContent = Math.round(forMale * stateActive.coefficient + ((forMale * stateActive.coefficient) * 0.15))
         downWeight.textContent = Math.round(forMale * stateActive.coefficient - ((forMale * stateActive.coefficient) * 0.15))
         formReset()
+        stateResult = true
     }
     if (stateGender === 'female') {
         normWeight.textContent = Math.round(forFemale * stateActive.coefficient)
         upWeight.textContent = Math.round(forFemale * stateActive.coefficient + ((forFemale * stateActive.coefficient) * 0.15))
         downWeight.textContent = Math.round(forFemale * stateActive.coefficient - ((forFemale * stateActive.coefficient) * 0.15))
+        formReset()
+        stateResult = true
     }
-    buttonReset.disabled = true
-    buttonSubmit.disabled = true
-    formReset()
 }
 
 form.addEventListener('submit', formSubmit)
-form.addEventListener('reset', disabledButton)
-inputsParsams.addEventListener('change', inputClear)
+form.addEventListener('reset', disabledButtonReset)
+inputsParsams.addEventListener('input', inputClear)
 //выбираем активность
 physicalActivity.addEventListener('change', checkPhysicalActivity)
 //выбераем гендер
 genderSwitcher.addEventListener('change', checkedGender)
 //получаем данные с инпутов
-age.addEventListener('keydown', getAgeValue)
-height.addEventListener('keydown', getHeightValue)
-weight.addEventListener('keydown', getWeightValue)
+age.addEventListener('input', getAgeValue)
+height.addEventListener('input', getHeightValue)
+weight.addEventListener('input', getWeightValue)
 
